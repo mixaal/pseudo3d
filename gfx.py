@@ -1,5 +1,10 @@
+import os
+
 import pygame as pg
 
+
+def load_image():
+    asurf = pg.image.load(os.path.join('data', 'bla.png'))
 
 class Screen(object):
     def __init__(self):
@@ -33,7 +38,7 @@ class Screen(object):
 
             self.screen.blit(background, (0, 0))
             world.draw(self.screen, player)
-            # allsprites.draw(screen)
+
             pg.display.flip()
 
         pg.quit()

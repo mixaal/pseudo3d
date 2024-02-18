@@ -11,6 +11,15 @@ class Point3d(object):
 
         return Point3d(x, y, z)
 
+    def mul(self, k):
+        return Point3d(self.x*k, self.y*k, self.z * k)
+
+    def add(self, v):
+        return Point3d(self.x+v.x, self.y + v.y, self.z+v.z)
+
+    def sub(self, v):
+        return Point3d(self.x-v.x, self.y - v.y, self.z-v.z)
+
     def screen(self, screen_size):
         sx = screen_size[0] / 2
         sy = screen_size[1] / 2
@@ -32,6 +41,7 @@ class Pov(object):
     def __init__(self, x=0.0, y=0.0, z=0.0):
         self.position = Point3d(x, y, z)
         self.direction = Point3d(0.0, 0.0, 1.0)
+        self.right_dir = Point3d(1.0, 0.0, 0.0)
 
     def forward(self, step=0.1):
         self.position.x += self.direction.x * step
@@ -44,14 +54,14 @@ class Pov(object):
         self.position.z -= self.direction.z * step
 
     def left(self, step=0.1):
-        self.position.x -= self.direction.z * step
-        self.position.y += self.direction.y * step
-        self.position.z += self.direction.x * step
+        self.position.x -= self.right_dir.x * step
+        self.position.y -= self.right_dir.y * step
+        self.position.z -= self.right_dir.z * step
 
     def right(self, step=0.1):
-        self.position.x += self.direction.z * step
-        self.position.y += self.direction.y * step
-        self.position.z += self.direction.x * step
+        self.position.x += self.right_dir.x * step
+        self.position.y += self.right_dir.y * step
+        self.position.z += self.right_dir.z * step
 
 
 class Line(object):
@@ -60,6 +70,22 @@ class Line(object):
         self.z1 = z1
         self.x2 = x2
         self.z2 = z2
+
+    def intersect(self, pov, ray):
+        x1Px = self.x1 - pov.position.x
+        z1Pz = self.z1 - pov.position.z
+        dz = self.z2 - self.z1
+        dx = self.x2 - self.x1
+        d = ray.x * dz - ray.z*dx
+        t = -1.0
+        q = -1.0
+        if d != 0.0:
+            t = (ray.z * x1Px - ray.x * z1Pz) / d
+        q = (x1Px + t*dx) / ray.x
+        return t, q
+
+
+
 
     def clip(self):
         # return True, self.x1, self.z1, self.x2, self.z2
@@ -99,3 +125,7 @@ class Line(object):
             return True, xe, ze, xs, 0
         else:
             return True, xs, 0, xe, ze
+
+
+
+
