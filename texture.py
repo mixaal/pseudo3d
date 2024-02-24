@@ -14,7 +14,7 @@ class Texture(object):
             self.sf.append(col)
         pa.close()
 
-    def scale(self, xx, t, q, x1, y1, x2, y2):
+    def scale(self, xx, batch, t, q, x1, y1, x2, y2):
         if t < 0:
             return None
 
@@ -25,5 +25,5 @@ class Texture(object):
 
         #h = int(800 / (0.1 + q))
         h = y2 - y1
-        s = pg.transform.scale(self.sf[idx], (1, h))
+        s = pg.transform.scale(self.sf[idx], (batch, h))
         return s, h, y1

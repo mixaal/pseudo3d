@@ -116,8 +116,7 @@ class Line(object):
         if d != 0.0:
             t = (ray.z * x1Px - ray.x * z1Pz) / d
         q = (x1Px + t * dx) / ray.x
-        z = ray.z * q + pov.position.z
-        return t, q, z
+        return t, q
 
     def clip(self):
         # return True, self.x1, self.z1, self.x2, self.z2

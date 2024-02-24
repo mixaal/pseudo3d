@@ -5,20 +5,19 @@ from transform import Point3d, Line, lerp
 
 
 class Wall(object):
-    def __init__(self, x1, z1, x2, z2, texture):
+    def __init__(self, x1, z1, x2, z2, texture, h=2.5):
         self.top_line = Line(x1, z1, x2, z2)
 
         self.p1 = Point3d(x1, -0.8, z1)
         self.p2 = Point3d(x2, -0.8, z2)
-        self.p3 = Point3d(x2, 1.7, z2)
-        self.p4 = Point3d(x1, 1.7, z1)
+        self.p3 = Point3d(x2, -0.8 + h, z2)
+        self.p4 = Point3d(x1, -0.8 + h, z1)
         self.texture = texture
 
     def lerp(self, t, player):
         bottom = lerp(self.p1, self.p2, t).transform(player)
         top = lerp(self.p4, self.p3, t).transform(player)
         return top, bottom
-
 
     def draw(self, screen, size, player):
         p1 = self.p1.transform(player)
@@ -51,4 +50,3 @@ class Wall(object):
         pg.draw.line(screen, (0, 200, 0), (x2, y2), (x3, y3))
         pg.draw.line(screen, (255, 0, 0), (x3, y3), (x4, y4))
         pg.draw.line(screen, (100, 100, 100), (x4, y4), (x1, y1))
-
