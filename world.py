@@ -1,60 +1,75 @@
-from transform import Point3d
+from math import sqrt
+
+from texture import Texture
+from transform import Point3d, Z_CLIP
 from wall import Wall
 
 
 class World(object):
     def __init__(self):
+        self.stone = Texture("data/textures/wall.png")
+        self.stone2 = Texture("data/textures/wall.png", repeat_x=2.0)
         self.walls = [
-            Wall(-1.0,  2.0, 1.0, 2.0),
-            Wall(-1.0,  1.0, -1.0, 2.0),
-            Wall(1.0, 1.0, 1.0, 2.0),
+            Wall(-4.0, 8.0, 4.0, 8.0, self.stone2),
+            Wall(-4.0, 4.0, -4.0, 8.0, self.stone),
+            Wall(4.0, 4.0, 4.0, 8.0, self.stone),
 
-            Wall(-1.0, 1.0, -2.0, 1.0),
-            Wall(1.0, 1.0, 2.0, 1.0),
-            Wall(-2.0, 1.0, -2.0, -1.0),
-            Wall(2.0, 1.0, 2.0, -1.0),
+            Wall(-4.0, 4.0, -8.0, 4.0, self.stone2),
+            Wall(4.0, 4.0, 8.0, 4.0, self.stone),
+            Wall(-8.0, 4.0, -8.0, -4.0, self.stone),
+            Wall(8.0, 4.0, 8.0, -4.0, self.stone),
 
-            Wall(1.0, -1.0, 2.0, -1.0),
-            Wall(-1.0, -1.0, -2.0, -1.0),
+            Wall(4.0, -4.0, 8.0, -4.0, self.stone),
+            Wall(-4.0, -4.0, -8.0, -4.0, self.stone),
 
-            Wall(-1.0, -2.0, 1.0, -2.0),
-            Wall(-1.0, -1.0, -1.0, -2.0),
-            Wall(1.0, -1.0, 1.0, -2.0),
+            Wall(-4.0, -8.0, 4.0, -8.0, self.stone),
+            Wall(-4.0, -4.0, -4.0, -8.0, self.stone),
+            Wall(4.0, -4.0, 4.0, -8.0, self.stone),
         ]
 
     def closest_wall(self, pov, ray):
+        # print(f"closest_wall(): pov={pov} ray={ray}")
         q_min = -1
         wall_min = None
         t_wall = None
+        q_wall = None
+        z_wall = None
         for wall in self.walls:
-            t,q = wall.top_line.intersect(pov, ray)
-            if 0<=t<=1:
+            t, q, z = wall.top_line.intersect(pov, ray)
+            if 0 <= t <= 1 and q > Z_CLIP:
                 if q_min < 0 < q:
                     q_min = q
                 if q_min >= q:
                     q_min = q
                     wall_min = wall
                     t_wall = t
-
-        return wall_min, t_wall
-
-
+                    q_wall = q
+                    z_wall = z
+        # print(f"closest_wall(): t_wall={t_wall} q_wall={q_wall}")
+        return wall_min, t_wall, q_wall, z_wall
 
     def draw(self, screen, player):
         size = screen.get_size()
-        dx = 2.0 / size[0]
-        x = -1.0
+        D = 2.0
+        dx = D / size[0]
+        x = -D/2 - dx
         for xx in range(size[0]):
-            ray = player.direction.add(player.right_dir.mul(x))
-            wall, t = self.closest_wall(player, ray)
-            if wall is not None:
-                wall.texture.scale()
-
             x += dx
-            print(f"xx={xx} x={x} dx={dx} ray={ray}")
+            ray = player.direction.add(player.right_dir.mul(x))
+            wall, t, q, z = self.closest_wall(player, ray.normalize())
+            if wall is not None:
+                top, bottom = wall.lerp(t, player)
+                x1, y1 = top.screen(size)
+                x2, y2 = bottom.screen(size)
 
+                s, h, y = wall.texture.scale(xx, t, q, x1, y1, x2, y2)
+                if s is not None:
+                    #screen.blit(s, (xx, (size[1] - h) // 2))
+                    screen.blit(s, (xx, y))
+                    # screen.blit(s, (x1, y))
+                    wall.draw(screen, size, player)
 
-
+            # print(f"xx={xx} x={x} dx={dx} ray={ray}")
 
         # for wall in self.walls:
         #     wall.draw(screen, size, player)

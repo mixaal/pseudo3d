@@ -19,6 +19,7 @@ class Screen(object):
         background = background.convert()
         background.fill((0, 0, 0))
 
+
         running = True
         while running:
             for event in pg.event.get():
@@ -32,9 +33,9 @@ class Screen(object):
                     if event.key == pg.K_DOWN:
                         player.backward()
                     if event.key == pg.K_LEFT:
-                        player.left()
+                        player.rotate(-0.01)
                     if event.key == pg.K_RIGHT:
-                        player.right()
+                        player.rotate(0.01)
 
             self.screen.blit(background, (0, 0))
             world.draw(self.screen, player)
