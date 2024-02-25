@@ -7,9 +7,9 @@ def load_image():
     asurf = pg.image.load(os.path.join('data', 'bla.png'))
 
 class Screen(object):
-    def __init__(self):
+    def __init__(self, w, h):
         pg.init()
-        self.screen = pg.display.set_mode((1280, 1024), pg.SCALED)
+        self.screen = pg.display.set_mode((w, h), pg.SCALED)
         pg.display.set_caption("Wall Fever")
         pg.mouse.set_visible(False)
 
@@ -33,9 +33,9 @@ class Screen(object):
                     if event.key == pg.K_DOWN:
                         player.backward()
                     if event.key == pg.K_LEFT:
-                        player.rotate(-0.01)
+                        player.rotate(-0.05)
                     if event.key == pg.K_RIGHT:
-                        player.rotate(0.01)
+                        player.rotate(0.05)
                     if event.key == pg.K_a:
                         player.left()
                     if event.key == pg.K_d:

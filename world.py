@@ -1,5 +1,6 @@
 from math import sqrt
 
+from fog import Fog, FOG_BLUE
 from texture import Texture
 from transform import Point3d, Z_CLIP
 from wall import Wall
@@ -7,24 +8,28 @@ from wall import Wall
 
 class World(object):
     def __init__(self):
-        self.stone = Texture("data/textures/wall_trans.png")
-        self.stone2 = Texture("data/textures/wall_trans.png", repeat_x=2.0)
+        self.fog = Fog()
+        self.stone = Texture("data/textures/akeer-wall-glow.jpg", fog=self.fog)
+        self.stone2 = Texture("data/textures/akeer-wall.jpg", repeat_x=1.0, fog=self.fog)
+        self.ishar_house = Texture("data/textures/ishar-house.jpg", repeat_x=9.0, fog=Fog(color=FOG_BLUE))
         self.big_walls = [
 
         ]
         self.z_buffer = []
         self.walls = [
-            Wall(-4.0, 20.0, 4.0, 20.0, self.stone2, h=10),
-            Wall(-4.0, 8.0, 4.0, 8.0, self.stone2),
-            Wall(-4.0, 4.0, -4.0, 8.0, self.stone),
-            Wall(4.0, 4.0, 4.0, 8.0, self.stone),
+            Wall(-4.0, 20.0, 14.0, 20.0, self.ishar_house, h=8),
+            Wall(-4.0, 16.0, 14.0, 16.0, self.ishar_house, h=8),
+
+            Wall(-4.0, 15.0, 4.0, 15.0, self.stone2),
+            Wall(-4.0, 4.0, -4.0, 15.0, self.stone),
+            Wall(4.0, 4.0, 4.0, 15.0, self.stone),
 
             Wall(-4.0, 4.0, -8.0, 4.0, self.stone2),
-            Wall(4.0, 4.0, 8.0, 4.0, self.stone),
+            Wall(4.0, 4.0, 38.0, 4.0, self.stone),
             Wall(-8.0, 4.0, -8.0, -4.0, self.stone),
-            Wall(8.0, 4.0, 8.0, -4.0, self.stone),
+            Wall(38.0, 4.0, 38.0, -4.0, self.stone),
 
-            Wall(4.0, -4.0, 8.0, -4.0, self.stone),
+            Wall(4.0, -4.0, 38.0, -4.0, self.stone),
             Wall(-4.0, -4.0, -8.0, -4.0, self.stone),
 
             Wall(-4.0, -8.0, 4.0, -8.0, self.stone),
@@ -64,7 +69,7 @@ class World(object):
 
     def draw(self, screen, player, batch=2):
         size = screen.get_size()
-        self.z_buffer = [10000 for i in range(size[0])]
+        # self.z_buffer = [10000 for i in range(size[0])]
 
         D = 2.0
         dx = D / size[0]

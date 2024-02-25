@@ -5,13 +5,13 @@ from transform import Point3d, Line, lerp
 
 
 class Wall(object):
-    def __init__(self, x1, z1, x2, z2, texture, h=2.5):
+    def __init__(self, x1, z1, x2, z2, texture, h=19.5):
         self.top_line = Line(x1, z1, x2, z2)
 
-        self.p1 = Point3d(x1, -0.8, z1)
-        self.p2 = Point3d(x2, -0.8, z2)
-        self.p3 = Point3d(x2, -0.8 + h, z2)
-        self.p4 = Point3d(x1, -0.8 + h, z1)
+        self.p1 = Point3d(x1, -1.8, z1)
+        self.p2 = Point3d(x2, -1.8, z2)
+        self.p3 = Point3d(x2, -1.8 + h, z2)
+        self.p4 = Point3d(x1, -1.8 + h, z1)
         self.texture = texture
 
     def lerp(self, t, player):

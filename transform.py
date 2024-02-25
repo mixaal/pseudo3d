@@ -65,22 +65,22 @@ class Pov(object):
         self.direction = Point3d(0.0, 0.0, 1.0)
         self.right_dir = Point3d(1.0, 0.0, 0.0)
 
-    def forward(self, step=0.03):
+    def forward(self, step=0.1):
         self.position.x += self.direction.x * step
         self.position.y += self.direction.y * step
         self.position.z += self.direction.z * step
 
-    def backward(self, step=0.03):
+    def backward(self, step=0.1):
         self.position.x -= self.direction.x * step
         self.position.y -= self.direction.y * step
         self.position.z -= self.direction.z * step
 
-    def left(self, step=0.03):
+    def left(self, step=0.1):
         self.position.x -= self.right_dir.x * step
         self.position.y -= self.right_dir.y * step
         self.position.z -= self.right_dir.z * step
 
-    def right(self, step=0.03):
+    def right(self, step=0.1):
         self.position.x += self.right_dir.x * step
         self.position.y += self.right_dir.y * step
         self.position.z += self.right_dir.z * step
